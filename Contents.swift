@@ -102,3 +102,28 @@ func wordBreak(_ s: String, _ words: [String]) -> Bool {
 
 print(wordBreak("leetcode", ["leet", "code"]))
 print(wordBreak("applepenapple", ["apple", "pen"]))
+
+// MARK: - Challenge 4
+/*
+ Მოცემულია მთელი რიცხვების მასივი “nums” და მთელი რიცხვი “k”. დააბრუნეთ
+ დააბრუნეთ ყველაზე ხშირად გამეორებული “k” ცალი ელემენტი. Პასუხი შეგგიძლიათ
+ დააბრუნოთ ნებისმიერი თანმიმდევრობით.
+ */
+
+func topKFrequent(_ nums: [Int], _ k: Int) -> [Int] {
+    var frequencyDict = [Int: Int]()
+    
+    for num in nums {
+        frequencyDict[num, default: 0] += 1
+    }
+    
+    let sortedKeys = frequencyDict.keys.sorted { frequencyDict[$0]! > frequencyDict[$1]! }
+    
+    return Array(sortedKeys.prefix(k))
+}
+
+
+let nums = [1, 1, 1, 2, 2, 3]
+let k = 2
+let result = topKFrequent(nums, k)
+print(result)
