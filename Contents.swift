@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 // MARK: - Challenge 1
 /* Მოცემულია String ტიპის ცვლადი “s”. იპოვეთ ყველაზე გრძელი ისეთი substring-ის ზომა,
@@ -136,112 +136,29 @@ print("Result of challenge 4 is \(result)")
  */
 
 func minMeetingRooms(_ intervals: [[Int]]) -> Int {
-    guard intervals.count > 0 else {
-        return 0
+    var beginTimes = [Int]()
+    var finishTimes = [Int]()
+    
+    for interval in intervals {
+        beginTimes.append(interval[0])
+        finishTimes.append(interval[1])
     }
     
-    let sortedIntervals = intervals.sorted { $0[0] < $1[0] }
+    beginTimes.sort()
+    finishTimes.sort()
     
-    var endTimesHeap = Heap<Int>(sort: <)
+    var roomCount = 0
+    var finishIndex = 0
     
-    endTimesHeap.enqueue(sortedIntervals[0][1])
-    
-    for i in 1..<sortedIntervals.count {
-        let interval = sortedIntervals[i]
-        
-        if interval[0] >= endTimesHeap.peek()! {
-            endTimesHeap.dequeue()
-        }
-        
-        endTimesHeap.enqueue(interval[1])
-    }
-    
-    return endTimesHeap.count
-}
-
-struct Heap<Element> {
-    var elements: [Element]
-    let sort: (Element, Element) -> Bool
-    
-    init(elements: [Element] = [], sort: @escaping (Element, Element) -> Bool) {
-        self.elements = elements
-        self.sort = sort
-        buildHeap()
-    }
-    
-    mutating func buildHeap() {
-        for i in stride(from: elements.count / 2 - 1, through: 0, by: -1) {
-            siftDown(from: i)
+    for begin in beginTimes {
+        if begin < finishTimes[finishIndex] {
+            roomCount += 1
+        } else {
+            finishIndex += 1
         }
     }
     
-    mutating func enqueue(_ element: Element) {
-        elements.append(element)
-        siftUp(from: elements.count - 1)
-    }
-    
-    mutating func dequeue() -> Element? {
-        guard !elements.isEmpty else {
-            return nil
-        }
-        elements.swapAt(0, elements.count - 1)
-        let removed = elements.removeLast()
-        siftDown(from: 0)
-        return removed
-    }
-    
-    func peek() -> Element? {
-        return elements.first
-    }
-    
-    mutating func siftUp(from index: Int) {
-        var childIndex = index
-        var parentIndex = parent(of: childIndex)
-        
-        while childIndex > 0 && sort(elements[childIndex], elements[parentIndex]) {
-            elements.swapAt(childIndex, parentIndex)
-            childIndex = parentIndex
-            parentIndex = parent(of: childIndex)
-        }
-    }
-    
-    mutating func siftDown(from index: Int) {
-        var parentIndex = index
-        
-        while true {
-            let leftChildIndex = leftChild(of: parentIndex)
-            let rightChildIndex = rightChild(of: parentIndex)
-            var candidateIndex = parentIndex
-            
-            if leftChildIndex < elements.count && sort(elements[leftChildIndex], elements[candidateIndex]) {
-                candidateIndex = leftChildIndex
-            }
-            if rightChildIndex < elements.count && sort(elements[rightChildIndex], elements[candidateIndex]) {
-                candidateIndex = rightChildIndex
-            }
-            if candidateIndex == parentIndex {
-                return
-            }
-            elements.swapAt(parentIndex, candidateIndex)
-            parentIndex = candidateIndex
-        }
-    }
-    
-    func parent(of index: Int) -> Int {
-        return (index - 1) / 2
-    }
-    
-    func leftChild(of index: Int) -> Int {
-        return 2 * index + 1
-    }
-    
-    func rightChild(of index: Int) -> Int {
-        return 2 * index + 2
-    }
-    
-    var count: Int {
-        return elements.count
-    }
+    return roomCount
 }
 
 let intervals1 = [[0, 30],[5, 10],[15, 20]]
