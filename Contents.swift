@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 // MARK: - Challenge 1
 /* Მოცემულია String ტიპის ცვლადი “s”. იპოვეთ ყველაზე გრძელი ისეთი substring-ის ზომა,
